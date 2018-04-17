@@ -1,4 +1,10 @@
 # Qt modules list
+# see @link http://doc.qt.io/archives/qt-5.7/qtmodules.html
+# see repo @link http://code.qt.io/cgit/
+# no empty lines here
+#qtwebkit
+#qtmultimedia
+#qtwebengine   # depricated version of webkit
 qtbase
 qtdeclarative
 qt3d
@@ -6,3 +12,5 @@ qtquickcontrols
 qtquickcontrols2
 qtserialport
 qtsvg
+qtlocation
+qtgraphicaleffects
