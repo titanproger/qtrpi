@@ -24,12 +24,32 @@ function device_name() {
         'linux-rasp-pi-g++') NAME='rpi1' ;;
         'linux-rasp-pi2-g++') NAME='rpi2' ;;
         'linux-rpi3-g++') NAME='rpi3' ;;
+        'linux-rasp-pi3-g++') NAME='rpi3' ;;
     esac
-    echo $NAME
+
+    if [[ "$NAME" == "rpi3" ]] ; then
+        for VERSION in '5.6.2' '5.7.0' '5.7.1' '5.8.0'; do
+            if [[ "$QTRPI_QT_VERSION" == "$VERSION" ]]; then
+                OLD_QT=true
+            fi
+        done
+
+        if [[ $OLD_QT ]]; then
+            if [[ "$1" == "linux-rpi3-g++"  ]]; then
+                echo $NAME
+            fi
+        else
+            if [[ "$1" == "linux-rasp-pi3-g++"  ]]; then
+                echo $NAME
+            fi
+        fi
+    else
+        echo $NAME
+    fi
 }
 
 validate_var_qtrpi_qt_version() {
-    for VERSION in '5.6.2' '5.7.0'; do
+    for VERSION in '5.6.2' '5.7.0' '5.7.1' '5.8.0' '5.9.0'  '5.9.1'  '5.9.2' '5.9.3' '5.9.4' '5.9.5' '5.10.0' '5.10.1'; do
         if [[ "$QTRPI_QT_VERSION" == "$VERSION" ]]; then
             VALID=true
         fi
@@ -44,7 +64,7 @@ validate_var_qtrpi_target_device() {
     NAME=$(device_name $QTRPI_TARGET_DEVICE)
 
     if [[ ! $NAME ]]; then
-        exit_error "Invalid QTRPI_TARGET_DEVICE value ($QTRPI_TARGET_DEVICE). Supported values: \n- linux-rasp-pi-g++ \n- linux-rasp-pi2-g++ \n- linux-rpi3-g++"
+        exit_error "Invalid QTRPI_TARGET_DEVICE value ($QTRPI_TARGET_DEVICE). Supported values: \n- linux-rasp-pi-g++ \n- linux-rasp-pi2-g++ \n- linux-rpi3-g++ for qt < 5.9.0 \n- linux-rasp-pi3-g++ for qt >= 5.9.0"
     fi
 }
 
@@ -70,9 +90,11 @@ check_env_vars() {
 
 ROOT=${QTRPI_ROOT-/opt/qtrpi}
 TARGET_DEVICE=${QTRPI_TARGET_DEVICE-'linux-rasp-pi2-g++'}
-QT_VERSION=${QTRPI_QT_VERSION-'5.7.0'}
+QT_VERSION=${QTRPI_QT_VERSION-'5.7.0'}  # does'nt matter it used only fro ready binaries
 TARGET_HOST=$QTRPI_TARGET_HOST
 RASPBIAN_BASENAME='raspbian_latest'
+
+
 
 DEVICE_NAME=$(device_name $TARGET_DEVICE)
 
@@ -105,8 +127,12 @@ function cd_root() {
 function clean_git_and_compilation() {
     git reset --hard HEAD
     git clean -fd
+    echo "Cleaning compilation"
     make clean -j 10
+    echo "Cleaning compilation distclean"
     make distclean -j 10
+
+    echo "Cleaning done"
 }
 
 function qmake_cmd() {

@@ -56,6 +56,8 @@ function build_qtbase() {
 
     fix_qmake
 
+    echo "Compile qt base device = $TARGET_DEVICE"
+
     # GNU gold linker has issues with ARMv8
     NO_USE_GOLD_LINKER=''
     if [[ $DEVICE_NAME == 'rpi3' ]]; then

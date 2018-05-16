@@ -1,5 +1,12 @@
 #!/bin/bash
 
+#export QTRPI_QT_VERSION='5.10.1'
+export QTRPI_QT_VERSION='5.8.0'
+export QTRPI_TARGET_DEVICE='linux-rpi3-g++'
+#export QTRPI_TARGET_DEVICE='linux-rasp-pi3-g++'
+export QTRPI_TARGET_HOST='pi@raspberry'
+export NO_DOWNLOAD=true
+
 source ${0%/*}/utils/common.sh
 
 function usage() {
@@ -40,11 +47,17 @@ check_env_vars
 
 cd utils
 ./init-common.sh
-./synchronize-toolchain.sh
-./download-raspbian.sh $RASPBIAN_ARG
-./prepare-sysroot-full.sh
-./prepare-sysroot-minimal.sh
+
+#./synchronize-toolchain.sh
+#./download-raspbian.sh $RASPBIAN_ARG
+#./prepare-sysroot-full.sh
+
+# you shouln not use minimal
+#./prepare-sysroot-minimal.sh
+
 ./switch-sysroot.sh full
-./synchronize-qt-modules.sh
-./compile-qt-modules.sh --clean-output --clean-modules-repo
+./synchronize-qt-modules.sh --clean-all
+./compile-qt-modules.sh
+#--clean-output --clean-modules-repo
+#./compile-qt-modules.sh
 

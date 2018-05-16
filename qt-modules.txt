@@ -10,7 +10,7 @@ qtdeclarative
 qt3d
 qtquickcontrols
 qtquickcontrols2
-qtserialport
+#qtserialport
 qtsvg
 qtlocation
-qtgraphicaleffects
+#qtgraphicaleffects
